@@ -55,18 +55,21 @@ file sealed class ErrorExceptionBuilder
     public ErrorExceptionBuilder WithId(Guid id)
     {
         _id = id;
+
         return this;
     }
 
     public ErrorExceptionBuilder WithErrors(ImmutableList<string> errors)
     {
         _errors = errors;
+
         return this;
     }
 
     public ErrorExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 

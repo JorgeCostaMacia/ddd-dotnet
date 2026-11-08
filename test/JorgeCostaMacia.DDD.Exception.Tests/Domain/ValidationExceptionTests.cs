@@ -56,18 +56,21 @@ file sealed class ValidationExceptionBuilder
     public ValidationExceptionBuilder WithId(Guid id)
     {
         _id = id;
+
         return this;
     }
 
     public ValidationExceptionBuilder WithValidations(ImmutableList<ValidationFailure> validations)
     {
         _validations = validations;
+
         return this;
     }
 
     public ValidationExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 

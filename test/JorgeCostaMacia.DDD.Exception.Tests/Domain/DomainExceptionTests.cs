@@ -51,12 +51,14 @@ file sealed class DomainExceptionBuilder
     public DomainExceptionBuilder WithMessage(string? message)
     {
         _message = message;
+
         return this;
     }
 
     public DomainExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 

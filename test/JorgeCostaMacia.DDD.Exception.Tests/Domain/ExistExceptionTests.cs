@@ -46,6 +46,7 @@ file sealed class ExistExceptionBuilder
     public ExistExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 
