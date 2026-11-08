@@ -1,0 +1,96 @@
+using JorgeCostaMacia.DDD.ValueObject.Domain;
+
+namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
+
+public sealed class DecimalValueObjectTests
+{
+    [Fact]
+    public void Ctor_HydratesRaw()
+        => Assert.Equal(1.5m, new DecimalValueObject(1.5m).Value);
+
+    [Fact]
+    public void From_KeepsValue()
+        => Assert.Equal(1.5m, DecimalValueObject.From(1.5m).Value);
+
+    // The validator has no rules, so Create never throws.
+    [Fact]
+    public void Create_KeepsValue()
+        => Assert.Equal(1.5m, DecimalValueObject.Create(1.5m).Value);
+
+    [Fact]
+    public void ImplicitOperator_ReturnsUnderlyingValue()
+    {
+        decimal value = DecimalValueObject.Create(1.5m);
+        Assert.Equal(1.5m, value);
+    }
+
+    // The protected Convert family is the toolbox for derived VOs in consuming contexts —
+    // exercised through a derived test type, like a real derived VO would.
+    [Fact]
+    public void Convert_FromString_ParsesNumber_InvariantCulture()
+        => Assert.Equal(100.5m, TestDecimal.Convert("100.5"));
+
+    // A comma is not read as a thousands separator: .NET would drop it wherever it sits, so a decimal comma
+    // ("12,50") or a misplaced one ("1,2,3") would silently come out as 1250 or 123.
+    [Theory]
+    [InlineData("1,5")]
+    [InlineData("12,50")]
+    [InlineData("1,000.5")]
+    public void Convert_FromStringWithAComma_Throws(string value)
+        => Assert.Throws<FormatException>(() => TestDecimal.Convert(value));
+
+    [Fact]
+    public void Convert_FromString_ReadsAnExponent()
+        => Assert.Equal(1000m, TestDecimal.Convert("1e3"));
+
+    [Fact]
+    public void Convert_Conversions()
+    {
+        // Regression: int/long funnel through (decimal) -> root Convert(decimal); must not self-recurse.
+        Assert.Equal(5m, TestDecimal.Convert(5));
+        Assert.Equal(5m, TestDecimal.Convert(5L));
+        Assert.Equal(2.5m, TestDecimal.Convert(2.5f));
+        Assert.Equal(2.5m, TestDecimal.Convert(2.5d));
+        Assert.Equal(1m, TestDecimal.Convert(true));
+        Assert.Equal(0m, TestDecimal.Convert(false));
+    }
+
+    public sealed record TestDecimal : DecimalValueObject
+    {
+        public TestDecimal(decimal value) : base(value) { }
+
+        public static new decimal Convert(string value) => DecimalValueObject.Convert(value);
+
+        public static new decimal Convert(int value) => DecimalValueObject.Convert(value);
+
+        public static new decimal Convert(float value) => DecimalValueObject.Convert(value);
+
+        public static new decimal Convert(bool value) => DecimalValueObject.Convert(value);
+
+        public static new decimal Convert(long value) => DecimalValueObject.Convert(value);
+
+        public static new decimal Convert(double value) => DecimalValueObject.Convert(value);
+    }
+    // The OrNull pair carries the field's optionality: absence in, absence out — never a second
+    // policy for invalid input.
+    [Fact]
+    public void FromOrNull_WithNoValue_ShortCircuitsToNull()
+        => Assert.Null(DecimalValueObject.FromOrNull(null));
+
+    [Fact]
+    public void FromOrNull_WithAValue_MaterializesIt()
+        => Assert.NotNull(DecimalValueObject.FromOrNull(1.5m));
+
+    [Fact]
+    public void CreateOrNull_WithNoValue_ShortCircuitsWithoutValidating()
+        => Assert.Null(DecimalValueObject.CreateOrNull(null));
+
+    [Fact]
+    public void CreateOrNull_WithAValue_ReturnsTheValueObject()
+        => Assert.NotNull(DecimalValueObject.CreateOrNull(1.5m));
+    // A record generates a ToString() that prints the type and its properties; the override replaces
+    // it with the bare value, which is what a log line or an interpolated string should show.
+    [Fact]
+    public void ToString_ShowsTheBareValue()
+        => Assert.Equal(1.5m.ToString(), DecimalValueObject.From(1.5m).ToString());
+}

@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Description>Marker interface for transport-agnostic domain events</Description>
+		<PackageTags>ddd,domain-event,event,marker</PackageTags>
+	</PropertyGroup>
+
+</Project>

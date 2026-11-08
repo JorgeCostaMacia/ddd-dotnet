@@ -1,0 +1,10 @@
+<Solution>
+  <Project Path="src/JorgeCostaMacia.DDD.Aggregate/JorgeCostaMacia.DDD.Aggregate.csproj" />
+  <Project Path="src/JorgeCostaMacia.DDD.DomainEvent/JorgeCostaMacia.DDD.DomainEvent.csproj" />
+  <Project Path="src/JorgeCostaMacia.DDD.Entity/JorgeCostaMacia.DDD.Entity.csproj" />
+  <Project Path="src/JorgeCostaMacia.DDD.Exception/JorgeCostaMacia.DDD.Exception.csproj" />
+  <Project Path="src/JorgeCostaMacia.DDD.ValueObject/JorgeCostaMacia.DDD.ValueObject.csproj" />
+  <Project Path="test/JorgeCostaMacia.DDD.Aggregate.Tests/JorgeCostaMacia.DDD.Aggregate.Tests.csproj" />
+  <Project Path="test/JorgeCostaMacia.DDD.Exception.Tests/JorgeCostaMacia.DDD.Exception.Tests.csproj" />
+  <Project Path="test/JorgeCostaMacia.DDD.ValueObject.Tests/JorgeCostaMacia.DDD.ValueObject.Tests.csproj" />
+</Solution>

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\JorgeCostaMacia.DDD.ValueObject\JorgeCostaMacia.DDD.ValueObject.csproj" />
+	</ItemGroup>
+
+</Project>

@@ -1,0 +1,159 @@
+using System.Globalization;
+using FluentValidation;
+
+namespace JorgeCostaMacia.DDD.ValueObject.Domain;
+
+/// <summary>
+/// Represents an immutable <b>Value Object</b> that encapsulates a single <see cref="int"/> (32-bit signed integer)
+/// value.
+/// </summary>
+/// <remarks>
+/// <para>
+/// This class serves as the base for domain Value Objects based on integer logic (e.g., ID, Count, Age).
+/// It exposes the three-verb creation surface: the constructor hydrates (raw assignment for ORMs and
+/// deserializers), <see cref="From(int)"/> converts (materializes, unvalidated) and
+/// <see cref="Create(int)"/> fabricates validated (nothing invalid escapes it).
+/// </para>
+/// <para>
+/// Both factories take the type's natural primitive (<see cref="int"/>). The protected <c>Convert</c>
+/// family carries the conversion logic from other primitive types (a fractional part is rejected, never truncated), so
+/// Value
+/// Objects deriving from this one in consuming contexts can reuse and redefine it.
+/// </para>
+/// </remarks>
+public record IntValueObject : IValueObject
+{
+    /// <summary>
+    /// The immutable <see cref="int"/> value encapsulated by this Value Object.
+    /// </summary>
+    public int Value { get; init; }
+
+    /// <summary>
+    /// <b>Hydration Constructor.</b> Assigns the value as-is, bypassing validation.
+    /// Reserved for infrastructure (ORMs, deserializers, database mapping — the EF converters rely on it).
+    /// </summary>
+    /// <param name="value">The integer value to encapsulate.</param>
+    public IntValueObject(int value)
+    {
+        Value = value;
+    }
+
+    /// <summary>
+    /// Converts: materializes a new <see cref="IntValueObject"/> from the natural primitive through
+    /// <see cref="Convert(int)"/>, <b>without validating it</b>. This is the path composites use to build their parts.
+    /// </summary>
+    /// <param name="value">The source integer value.</param>
+    /// <returns>A new, unvalidated <see cref="IntValueObject"/> instance.</returns>
+    public static IntValueObject From(int value) => new IntValueObject(Convert(value));
+
+    /// <summary>
+    /// Converts, propagating absence: gives <see langword="null"/> when <paramref name="value"/> is
+    /// <see langword="null"/>, otherwise
+    /// the same result as <see cref="From(int)"/> — <b>without validating it</b>.
+    /// </summary>
+    /// <param name="value">The integer value to encapsulate, or <see langword="null"/>.</param>
+    /// <returns>A new, unvalidated <see cref="IntValueObject"/> instance, or <see langword="null"/>.</returns>
+    public static IntValueObject? FromOrNull(int? value) => value is null ? null : From(value.Value);
+
+    /// <summary>
+    /// Creates: materializes the value through <see cref="From(int)"/> and validates it —
+    /// nothing invalid escapes this factory.
+    /// </summary>
+    /// <param name="value">The source integer value.</param>
+    /// <returns>A new, validated <see cref="IntValueObject"/> instance.</returns>
+    /// <exception cref="IntValueObjectValidationException">Thrown when the resulting value violates a validation
+    /// rule.</exception>
+    public static IntValueObject Create(int value)
+    {
+        IntValueObject vo = From(value);
+        vo.Validate();
+
+        return vo;
+    }
+
+    /// <summary>
+    /// Creates, propagating absence: gives <see langword="null"/> when <paramref name="value"/> is
+    /// <see langword="null"/>, otherwise the
+    /// same result as <see cref="Create(int)"/>. Absence short-circuits; a supplied value still has to be valid.
+    /// </summary>
+    /// <param name="value">The integer value to encapsulate, or <see langword="null"/>.</param>
+    /// <returns>A new, validated <see cref="IntValueObject"/> instance, or <see langword="null"/>.</returns>
+    /// <exception cref="IntValueObjectValidationException">Thrown when a supplied value violates a validation
+    /// rule.</exception>
+    public static IntValueObject? CreateOrNull(int? value)
+    {
+        IntValueObject? vo = FromOrNull(value);
+        vo?.Validate();
+
+        return vo;
+    }
+
+    /// <summary>Runs this value object through its own validator, throwing when a rule fails.</summary>
+    private void Validate() => IntValueObjectValidator.Create().ValidateAndThrow(this);
+
+    /// <summary>
+    /// Converts an integer value (identity conversion).
+    /// </summary>
+    protected static int Convert(int value) => value;
+
+    /// <summary>
+    /// Parses a string into a decimal (trimming whitespace first), then converts it to an integer: <c>"5.0"</c> is
+    /// accepted,
+    /// <c>"5.9"</c> throws <see cref="FormatException"/>.
+    /// </summary>
+    protected static int Convert(string value)
+        => Convert(decimal.Parse(value.Trim(), NumberStyles.Float, CultureInfo.InvariantCulture));
+
+    /// <summary>
+    /// Converts a float to an integer. Throws <see cref="FormatException"/> if it has a fractional part (or is NaN) and
+    /// <see cref="OverflowException"/> if it is out of <see cref="int"/> range. Checked on the float itself, not
+    /// through
+    /// decimal, which keeps only 7 significant digits: 123456792f would come out as 123456800.
+    /// </summary>
+    protected static int Convert(float value)
+        => value == float.Truncate(value)
+            ? checked((int)value)
+            : throw new FormatException($"{value} is not an integer");
+
+    /// <summary>
+    /// Converts a decimal to an integer. A fractional part throws <see cref="FormatException"/> instead of being
+    /// dropped:
+    /// truncating 5.9 to 5 would invent the value, and a field that wants to truncate or round says so in its own
+    /// Value Object. Throws <see cref="OverflowException"/> if the value is out of <see cref="int"/> range.
+    /// </summary>
+    protected static int Convert(decimal value)
+        => value == decimal.Truncate(value) ? (int)value : throw new FormatException($"{value} is not an integer");
+
+    /// <summary>
+    /// Converts a boolean to an integer (1 for true, 0 for false).
+    /// </summary>
+    protected static int Convert(bool value) => value ? 1 : 0;
+
+    /// <summary>
+    /// Converts a long to an integer. Throws <see cref="OverflowException"/> if the value is out of <see cref="int"/>
+    /// range.
+    /// </summary>
+    protected static int Convert(long value) => Convert((decimal)value);
+
+    /// <summary>
+    /// Converts a double to an integer. Throws <see cref="FormatException"/> if it has a fractional part (or is NaN)
+    /// and
+    /// <see cref="OverflowException"/> if it is out of <see cref="int"/> range. Checked on the double itself, not
+    /// through
+    /// decimal, which keeps only 15 significant digits and would round a fraction below them away.
+    /// </summary>
+    protected static int Convert(double value)
+        => value == double.Truncate(value)
+            ? checked((int)value)
+            : throw new FormatException($"{value} is not an integer");
+
+    /// <summary>Implicitly converts the value object to its underlying <see cref="int"/> value.</summary>
+    /// <param name="valueObject">The value object to convert.</param>
+    public static implicit operator int(IntValueObject valueObject) => valueObject.Value;
+
+    /// <summary>
+    /// Returns the string representation of the encapsulated integer value.
+    /// </summary>
+    /// <returns>The internal value (<see cref="Value"/>) as a string.</returns>
+    public sealed override string ToString() => Value.ToString();
+}
