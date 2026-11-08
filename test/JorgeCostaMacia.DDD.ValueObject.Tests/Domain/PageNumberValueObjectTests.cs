@@ -5,11 +5,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class PageNumberValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutValidating()
+    public void Ctor_WithZero_HydratesItWithoutValidating()
         => Assert.Equal(0, new PageNumberValueObject(0).Value);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithAPositiveNumber_KeepsTheValue()
         => Assert.Equal(5, PageNumberValueObject.From(5).Value);
 
     [Fact]
@@ -17,7 +17,7 @@ public sealed class PageNumberValueObjectTests
         => Assert.Equal(0, PageNumberValueObject.From(0).Value);
 
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithAPositiveNumber_KeepsTheValue()
         => Assert.Equal(5, PageNumberValueObject.Create(5).Value);
 
     [Fact]
@@ -48,7 +48,7 @@ public sealed class PageNumberValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAPageNumber_ShowsTheBareValue()
         => Assert.Equal("3", PageNumberValueObject.From(3).ToString());
 
     // Within bounds against runtime data, so each outcome is pinned: inside the data it is untouched,

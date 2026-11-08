@@ -64,7 +64,7 @@ file sealed class NotFoundExceptionBuilder
 public sealed class NotFoundExceptionTests
 {
     [Fact]
-    public void Defaults_AreApplied_WhenMetadataOmitted()
+    public void Ctor_WithMetadataOmitted_AppliesTheDefaults()
     {
         TestNotFoundException exception = new TestNotFoundException();
 
@@ -75,7 +75,7 @@ public sealed class NotFoundExceptionTests
     }
 
     [Fact]
-    public void Message_IncludesIdAndType()
+    public void Message_WithASuppliedMessage_IncludesIdAndType()
     {
         TestNotFoundException exception = new TestNotFoundException("missing");
 
@@ -83,7 +83,7 @@ public sealed class NotFoundExceptionTests
     }
 
     [Fact]
-    public void Message_OmitsArrow_WhenNoMessage()
+    public void Message_WithNoMessage_OmitsTheArrow()
     {
         TestNotFoundException exception = new TestNotFoundException();
 
@@ -91,7 +91,7 @@ public sealed class NotFoundExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_StoresAllMetadataVerbatim()
+    public void ExplicitCtor_WithAllMetadataSupplied_StoresItVerbatim()
     {
         Guid id = Guid.NewGuid();
         Guid code = Guid.NewGuid();
@@ -114,7 +114,7 @@ public sealed class NotFoundExceptionTests
     }
 
     [Fact]
-    public void InnerException_IsPropagated()
+    public void InnerException_WithAnInnerExceptionSupplied_IsPropagated()
     {
         InvalidOperationException inner = new InvalidOperationException("cause");
 
@@ -124,6 +124,6 @@ public sealed class NotFoundExceptionTests
     }
 
     [Fact]
-    public void Instance_IsAssignableToDomainException()
+    public void Ctor_WithNoArguments_IsAssignableToDomainException()
         => Assert.IsAssignableFrom<DomainException>(new TestNotFoundException());
 }

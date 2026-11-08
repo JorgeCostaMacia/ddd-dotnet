@@ -5,20 +5,20 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class FloatValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw()
+    public void Ctor_WithAFloat_HydratesTheRawValue()
         => Assert.Equal(2.5f, new FloatValueObject(2.5f).Value);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithAFloat_KeepsTheValue()
         => Assert.Equal(2.5f, FloatValueObject.From(2.5f).Value);
 
     // The validator has no rules, so Create never throws.
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithAFloat_KeepsTheValue()
         => Assert.Equal(2.5f, FloatValueObject.Create(2.5f).Value);
 
     [Fact]
-    public void ImplicitOperator_ReturnsUnderlyingValue()
+    public void ImplicitOperator_WithAFloat_ReturnsTheUnderlyingValue()
     {
         float value = FloatValueObject.Create(2.5f);
         Assert.Equal(2.5f, value);
@@ -27,7 +27,7 @@ public sealed class FloatValueObjectTests
     // The protected Convert family is the toolbox for derived VOs in consuming contexts —
     // exercised through a derived test type, like a real derived VO would.
     [Fact]
-    public void Convert_FromString_ParsesNumber_InvariantCulture()
+    public void Convert_FromADotDecimalString_ParsesItWithTheInvariantCulture()
         => Assert.Equal(3.5f, TestFloat.Convert("3.5"));
 
     // A comma is not read as a thousands separator: .NET would drop it wherever it sits, so a decimal comma
@@ -44,7 +44,7 @@ public sealed class FloatValueObjectTests
         => Assert.Equal(1000f, TestFloat.Convert("1e3"));
 
     [Fact]
-    public void Convert_Conversions()
+    public void Convert_FromOtherNumericTypesAndBool_ReturnsTheEquivalentValue()
     {
         // Regression: int/long funnel through (float) -> root Convert(float); must not self-recurse.
         Assert.Equal(5f, TestFloat.Convert(5));
@@ -91,6 +91,6 @@ public sealed class FloatValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAFloat_ShowsTheBareValue()
         => Assert.Equal(1.5f.ToString(), FloatValueObject.From(1.5f).ToString());
 }

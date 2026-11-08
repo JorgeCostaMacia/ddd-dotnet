@@ -23,7 +23,7 @@ public sealed class ValueObjectToStringTests
         .ToArray();
 
     [Fact]
-    public void EveryValueObject_ResolvesToTheSealedToStringAndNotTheRecordOne()
+    public void ToString_OnEveryValueObject_ResolvesToTheSealedOneAndNotTheRecordOne()
     {
         Assert.NotEmpty(_valueObjects);
 

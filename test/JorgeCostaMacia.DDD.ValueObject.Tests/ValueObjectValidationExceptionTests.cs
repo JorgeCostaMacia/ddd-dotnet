@@ -31,7 +31,7 @@ public sealed class ValueObjectValidationExceptionTests
     }
 
     [Fact]
-    public void TheScan_FindsOneExceptionPerValueObject()
+    public void Scan_OfTheValueObjectAssembly_FindsOneExceptionPerValueObject()
     {
         int valueObjects = typeof(IValueObject).Assembly.GetTypes()
             .Count(type => type is { IsClass: true, IsAbstract: false } && typeof(IValueObject).IsAssignableFrom(type));
@@ -42,7 +42,7 @@ public sealed class ValueObjectValidationExceptionTests
     // The shape the validators throw: everything but the failures comes from the type's own defaults.
     [Theory]
     [MemberData(nameof(Exceptions))]
-    public void FailuresConstructor_StampsTheTypeOwnCodeAndKeepsTheFailures(Type exception)
+    public void FailuresConstructor_WithOneFailure_StampsTheTypeOwnCodeAndKeepsIt(Type exception)
     {
         List<ValidationFailure> failures = new List<ValidationFailure> { new ValidationFailure("Value", "boom") };
 
@@ -59,7 +59,7 @@ public sealed class ValueObjectValidationExceptionTests
 
     // Every code is distinct: two value objects failing must not report the same error identity.
     [Fact]
-    public void EveryException_CarriesADistinctCode()
+    public void FailuresConstructor_AcrossEveryException_StampsADistinctCode()
     {
         List<ValidationFailure> failures = new List<ValidationFailure> { new ValidationFailure("Value", "boom") };
         List<Guid> codes = new List<Guid>();
@@ -92,7 +92,7 @@ public sealed class ValueObjectValidationExceptionTests
     // The transport shape: what goes in comes back out untouched, which is what rehydration relies on.
     [Theory]
     [MemberData(nameof(Exceptions))]
-    public void RequiredConstructor_PreservesEveryValueVerbatim(Type exception)
+    public void RequiredConstructor_WithEveryValueSupplied_PreservesItVerbatim(Type exception)
     {
         Guid aggregateId = Guid.NewGuid();
         Guid aggregateCode = Guid.NewGuid();

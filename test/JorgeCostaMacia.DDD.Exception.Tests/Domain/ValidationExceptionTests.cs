@@ -89,7 +89,7 @@ file sealed class ValidationExceptionBuilder
 public sealed class ValidationExceptionTests
 {
     [Fact]
-    public void Defaults_AreApplied_WhenMetadataOmitted()
+    public void Ctor_WithMetadataOmitted_AppliesTheDefaults()
     {
         TestValidationException exception = new TestValidationException(Array.Empty<ValidationFailure>());
 
@@ -99,7 +99,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void Validations_AreStored_AndFormattedIntoMessage()
+    public void Ctor_WithTwoValidations_StoresThemAndFormatsThemIntoTheMessage()
     {
         ValidationFailure[] failures = new ValidationFailure[]
         {
@@ -117,7 +117,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void EmptyValidations_ProduceNoArrow()
+    public void Message_WithNoValidations_OmitsTheArrow()
     {
         TestValidationException exception = new TestValidationException(Array.Empty<ValidationFailure>());
 
@@ -125,7 +125,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void Validations_AreIsolatedFromTheSourceSequence()
+    public void Validations_WhenTheSourceListGrowsAfterwards_AreIsolatedFromIt()
     {
         List<ValidationFailure> source = new List<ValidationFailure> { new ValidationFailure("Name", "is required") };
         TestValidationException exception = new TestValidationException(source);
@@ -136,7 +136,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_StoresValidationsAndMetadata()
+    public void ExplicitCtor_WithAnIdAndValidations_StoresBoth()
     {
         Guid id = Guid.NewGuid();
         ImmutableList<ValidationFailure> validations = ImmutableList.Create(
@@ -152,7 +152,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void InnerException_IsPropagated()
+    public void InnerException_WithAnInnerExceptionSupplied_IsPropagated()
     {
         InvalidOperationException inner = new InvalidOperationException("cause");
 
@@ -162,7 +162,7 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void Validations_WithNullPropertyName_FormatWithLeadingColon()
+    public void Message_WithANullPropertyName_FormatsItWithALeadingColon()
     {
         TestValidationException exception = new TestValidationException(
             new ValidationFailure[] { new ValidationFailure(null, "is required") });
@@ -171,6 +171,6 @@ public sealed class ValidationExceptionTests
     }
 
     [Fact]
-    public void Instance_IsAssignableToDomainException()
+    public void Ctor_WithNoValidations_IsAssignableToDomainException()
         => Assert.IsAssignableFrom<DomainException>(new TestValidationException(Array.Empty<ValidationFailure>()));
 }

@@ -10,15 +10,15 @@ public sealed class GroupByValueObjectValidatorTests
     [Theory]
     [InlineData("category")]
     [InlineData("country_code")]
-    public void NonEmpty_Passes(string value)
+    public void Validate_WithANonEmptyName_Passes(string value)
         => Assert.True(_validator.Validate(GroupByValueObject.From(value)).IsValid);
 
     [Fact]
-    public void Empty_Fails()
+    public void Validate_WithAnEmptyName_Fails()
         => Assert.False(_validator.Validate(GroupByValueObject.From("")).IsValid);
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithAnEmptyName_ThrowsTheTypedException()
         => Assert.Throws<GroupByValueObjectValidationException>(
             () => _validator.ValidateAndThrow(GroupByValueObject.From("")));
 }
