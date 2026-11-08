@@ -1,0 +1,64 @@
+# JorgeCostaMacia.DDD.Aggregate
+
+The DDD **Aggregate Root** building block: a base class (and `IAggregate` contract) that accumulates **domain events** raised during a unit of work, then hands them off — pull-and-clear — for persistence and publication.
+
+[![NuGet](https://img.shields.io/nuget/v/JorgeCostaMacia.DDD.Aggregate.svg)](https://www.nuget.org/packages/JorgeCostaMacia.DDD.Aggregate/)
+[![Downloads](https://img.shields.io/nuget/dt/JorgeCostaMacia.DDD.Aggregate.svg)](https://www.nuget.org/packages/JorgeCostaMacia.DDD.Aggregate/)
+[![Build](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/main.yml)
+[![License](https://img.shields.io/github/license/JorgeCostaMacia/ddd-dotnet.svg)](https://github.com/JorgeCostaMacia/ddd-dotnet/blob/main/LICENSE.txt)
+
+---
+
+## Install
+
+```bash
+dotnet add package JorgeCostaMacia.DDD.Aggregate
+```
+
+## Usage
+
+```csharp
+using JorgeCostaMacia.DDD.Aggregate.Domain;
+using JorgeCostaMacia.DDD.DomainEvent.Domain;
+
+public sealed class Order : Aggregate
+{
+    public Guid Id { get; init; }
+
+    public void Place()
+    {
+        // ... mutate state ...
+        AddEvent(new OrderPlaced(Id));
+    }
+}
+
+// after handling a command, the persistence/publish layer drains the events exactly once:
+IEnumerable<IDomainEvent> events = order.PullEvents();
+```
+
+## Transport-agnostic by design
+
+The aggregate accumulates **`IDomainEvent`** — a pure marker from [JorgeCostaMacia.DDD.DomainEvent](https://www.nuget.org/packages/JorgeCostaMacia.DDD.DomainEvent/) with no knowledge of any bus. A messaging layer specializes it (`IEvent : IDomainEvent, ...`), so concrete events still fit the aggregate's event list while the domain stays free of any transport dependency.
+
+`PullEvents()` returns the pending events **and clears** the internal list, so they are published exactly once per unit of work. Add events with `AddEvent(...)` (one) or `AddEvents(...)` (a range).
+
+## Requirements
+
+The **.NET 10** SDK.
+
+Depends on [JorgeCostaMacia.DDD.DomainEvent](https://www.nuget.org/packages/JorgeCostaMacia.DDD.DomainEvent/).
+
+## About
+
+`JorgeCostaMacia.DDD.Aggregate` is part of **[ddd-dotnet](https://github.com/JorgeCostaMacia/ddd-dotnet)** — DDD building blocks for .NET: value objects with their FluentValidation validators, aggregates, entities, domain events and the domain exception hierarchy, each package scoped to a single concern.
+
+- **Repository:** [github.com/JorgeCostaMacia/ddd-dotnet](https://github.com/JorgeCostaMacia/ddd-dotnet)
+- **Issues & requests:** [open an issue](https://github.com/JorgeCostaMacia/ddd-dotnet/issues)
+- **Contributing:** [CONTRIBUTING.md](https://github.com/JorgeCostaMacia/ddd-dotnet/blob/main/CONTRIBUTING.md)
+- **Security:** [report a vulnerability](https://github.com/JorgeCostaMacia/ddd-dotnet/security/advisories/new)
+
+**Author:** Jorge Costa Maciá
+
+- [LinkedIn](https://www.linkedin.com/in/jorge-costa-macia-842817164/)
+- [GitHub](https://github.com/JorgeCostaMacia/)
+- [Bitbucket](https://bitbucket.org/jorgecostamacia/)
