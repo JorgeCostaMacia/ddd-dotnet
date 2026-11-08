@@ -128,6 +128,7 @@ public sealed class ValueObjectValidationExceptionTests
             .Single(constructor =>
             {
                 ParameterInfo[] parameters = constructor.GetParameters();
+
                 return parameters.Length == parameterCount && parameters[^1].ParameterType == lastParameter;
             });
 

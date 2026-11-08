@@ -46,6 +46,7 @@ file sealed class NotFoundExceptionBuilder
     public NotFoundExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 
