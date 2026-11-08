@@ -5,11 +5,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class EmailValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutNormalizingOrValidating()
+    public void Ctor_WithAPaddedInvalidAddress_HydratesItWithoutNormalizingOrValidating()
         => Assert.Equal("  notanemail  ", new EmailValueObject("  notanemail  ").Value);
 
     [Fact]
-    public void From_Trims()
+    public void From_WithAPaddedAddress_TrimsIt()
         => Assert.Equal("user@host.com", EmailValueObject.From("  user@host.com  ").Value);
 
     [Fact]
@@ -17,7 +17,7 @@ public sealed class EmailValueObjectTests
         => Assert.Equal("notanemail", EmailValueObject.From("notanemail").Value);
 
     [Fact]
-    public void Create_Trims()
+    public void Create_WithAPaddedAddress_TrimsIt()
         => Assert.Equal("user@host.com", EmailValueObject.Create("  user@host.com  ").Value);
 
     [Fact]
@@ -57,6 +57,6 @@ public sealed class EmailValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAnAddress_ShowsTheBareValue()
         => Assert.Equal("user@host.com", EmailValueObject.From("user@host.com").ToString());
 }

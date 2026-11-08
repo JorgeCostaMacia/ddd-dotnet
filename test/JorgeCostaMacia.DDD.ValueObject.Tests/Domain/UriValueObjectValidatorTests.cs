@@ -16,11 +16,11 @@ public sealed class UriValueObjectValidatorTests
     [InlineData("urn:isbn:0451450523")]
     [InlineData("/rooted/path")]
     [InlineData("relative/path")]
-    public void AnyUri_Passes(string value)
+    public void Validate_WithAnyAbsoluteOrRelativeUri_Passes(string value)
         => Assert.True(_validator.Validate(UriValueObject.From(new Uri(value, UriKind.RelativeOrAbsolute))).IsValid);
 
     [Fact]
-    public void Null_Fails()
+    public void Validate_WithANullUri_FailsTheNotNullRuleOnly()
     {
         ValidationResult result = _validator.Validate(new UriValueObject(null!));
 
@@ -28,7 +28,7 @@ public sealed class UriValueObjectValidatorTests
     }
 
     [Fact]
-    public void Null_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithANullUri_ThrowsTheTypedException()
         => Assert.Throws<UriValueObjectValidationException>(
             () => _validator.ValidateAndThrow(new UriValueObject(null!)));
 
@@ -38,7 +38,7 @@ public sealed class UriValueObjectValidatorTests
     [InlineData("http://example.com/a", true)]
     [InlineData("ftp://example.com", false)]
     [InlineData("/rooted/path", false)]
-    public void DerivedValidator_NarrowsToAWebUrl(
+    public void Validate_ThroughADerivedWebUrlValidator_NarrowsToAWebUrl(
         string value,
         bool valid
     )

@@ -5,20 +5,20 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class LongValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw()
+    public void Ctor_WithALong_HydratesTheRawValue()
         => Assert.Equal(9L, new LongValueObject(9L).Value);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithALong_KeepsTheValue()
         => Assert.Equal(9L, LongValueObject.From(9L).Value);
 
     // The validator has no rules, so Create never throws.
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithLongMaxValue_KeepsTheValue()
         => Assert.Equal(long.MaxValue, LongValueObject.Create(long.MaxValue).Value);
 
     [Fact]
-    public void ImplicitOperator_ReturnsUnderlyingValue()
+    public void ImplicitOperator_WithALong_ReturnsTheUnderlyingValue()
     {
         long value = LongValueObject.Create(9L);
         Assert.Equal(9L, value);
@@ -31,7 +31,7 @@ public sealed class LongValueObjectTests
         => Assert.Equal(42L, TestLong.Convert("42"));
 
     [Fact]
-    public void Convert_FromString_LargeValues_KeepFullPrecision()
+    public void Convert_FromALargeIntegerString_KeepsFullPrecision()
     {
         // Regression: a double-based parse loses precision above 2^53 and overflows near long.MaxValue.
         Assert.Equal(long.MaxValue, TestLong.Convert("9223372036854775807"));
@@ -39,7 +39,7 @@ public sealed class LongValueObjectTests
     }
 
     [Fact]
-    public void Convert_FromString_OutOfRange_Throws()
+    public void Convert_FromAnOutOfRangeString_Throws()
         => Assert.Throws<OverflowException>(() => TestLong.Convert("9223372036854775808"));
 
     // A fractional part is not dropped: truncating 5.9 to 5 would invent the value. A field that wants to
@@ -65,7 +65,7 @@ public sealed class LongValueObjectTests
     }
 
     [Fact]
-    public void Convert_FromFloatingPoint_OutOfRange_Throws()
+    public void Convert_FromAnOutOfRangeFloatingPoint_Throws()
     {
         Assert.Throws<OverflowException>(() => TestLong.Convert(1e30f));
         Assert.Throws<OverflowException>(() => TestLong.Convert(1e30));
@@ -83,7 +83,7 @@ public sealed class LongValueObjectTests
     }
 
     [Fact]
-    public void Convert_Conversions()
+    public void Convert_FromOtherNumericTypesAndBool_ReturnsTheEquivalentValue()
     {
         Assert.Equal(5L, TestLong.Convert(5));
         Assert.Equal(5L, TestLong.Convert(5.0f));
@@ -127,6 +127,6 @@ public sealed class LongValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithALong_ShowsTheBareValue()
         => Assert.Equal("42", LongValueObject.From(42L).ToString());
 }

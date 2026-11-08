@@ -13,7 +13,7 @@ public sealed class Ipv4ValueObjectValidatorTests
     [InlineData("10.0.0.255")]
     [InlineData("255.255.255.255")]
     [InlineData("0.0.0.0")]
-    public void CanonicalIpv4_Passes(string value)
+    public void Validate_WithACanonicalIpv4_Passes(string value)
         => Assert.True(_validator.Validate(Ipv4ValueObject.From(value)).IsValid);
 
     [Theory]
@@ -28,12 +28,12 @@ public sealed class Ipv4ValueObjectValidatorTests
     [InlineData("0x1.0x2.0x3.0x4")]     // hexadecimal octets
     [InlineData("::1")]                 // IPv6
     [InlineData("not.an.ip.x")]         // not numeric
-    public void NonCanonicalOrNotIpv4_Fails(string value)
+    public void Validate_WithANonCanonicalOrNonIpv4Value_Fails(string value)
         => Assert.False(_validator.Validate(Ipv4ValueObject.From(value)).IsValid);
 
     // No cascade: an empty value reports both what it is (empty) and what it is not (an IPv4).
     [Fact]
-    public void Empty_ReportsBothRules()
+    public void Validate_WithAnEmptyValue_ReportsBothRules()
     {
         ValidationResult result = _validator.Validate(Ipv4ValueObject.From(""));
 
@@ -42,7 +42,7 @@ public sealed class Ipv4ValueObjectValidatorTests
     }
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithALeadingZeroOctet_ThrowsTheTypedException()
         => Assert.Throws<Ipv4ValueObjectValidationException>(
             () => _validator.ValidateAndThrow(Ipv4ValueObject.From("010.0.0.1")));
 }

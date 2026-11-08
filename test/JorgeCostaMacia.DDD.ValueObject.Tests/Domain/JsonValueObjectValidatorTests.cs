@@ -19,7 +19,7 @@ public sealed class JsonValueObjectValidatorTests
     [InlineData("123")]                        // number
     [InlineData("true")]                       // boolean
     [InlineData("null")]                       // null literal
-    public void AnyJsonDocument_Passes(string value)
+    public void Validate_WithAnyJsonDocument_Passes(string value)
         => Assert.True(_validator.Validate(JsonValueObject.From(value)).IsValid);
 
     [Theory]
@@ -29,12 +29,12 @@ public sealed class JsonValueObjectValidatorTests
     [InlineData("{\"a\":}")]         // malformed
     [InlineData("{'a':1}")]          // single quotes
     [InlineData("{} trailing")]      // a document followed by more text
-    public void InvalidJson_Fails(string value)
+    public void Validate_WithInvalidJson_Fails(string value)
         => Assert.False(_validator.Validate(JsonValueObject.From(value)).IsValid);
 
     // No cascade: an empty value reports both what it is (empty) and what it is not (a JSON).
     [Fact]
-    public void Empty_ReportsBothRules()
+    public void Validate_WithAnEmptyValue_ReportsBothRules()
     {
         ValidationResult result = _validator.Validate(JsonValueObject.From(""));
 
@@ -43,7 +43,7 @@ public sealed class JsonValueObjectValidatorTests
     }
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithNonJsonText_ThrowsTheTypedException()
         => Assert.Throws<JsonValueObjectValidationException>(
             () => _validator.ValidateAndThrow(JsonValueObject.From("notjson")));
 
@@ -54,7 +54,7 @@ public sealed class JsonValueObjectValidatorTests
     [InlineData("[1]", false)]
     [InlineData("5", false)]
     [InlineData("null", false)]
-    public void DerivedValidator_NarrowsToAnObject(
+    public void Validate_ThroughADerivedObjectValidator_NarrowsToAnObject(
         string value,
         bool valid
     ) => Assert.Equal(valid, new JsonObjectValidator().Validate(new JsonObject(value)).IsValid);

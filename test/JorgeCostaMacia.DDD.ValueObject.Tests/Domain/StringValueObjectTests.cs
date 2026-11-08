@@ -6,35 +6,35 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class StringValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutNormalizing()
+    public void Ctor_WithAPaddedValue_HydratesItWithoutTrimming()
         => Assert.Equal("  hi  ", new StringValueObject("  hi  ").Value);
 
     [Fact]
-    public void From_TrimsWhitespace()
+    public void From_WithAPaddedValue_TrimsTheWhitespace()
         => Assert.Equal("hi", StringValueObject.From("  hi  ").Value);
 
     [Fact]
-    public void Create_TrimsWhitespace()
+    public void Create_WithAPaddedValue_TrimsTheWhitespace()
         => Assert.Equal("hi", StringValueObject.Create("  hi  ").Value);
 
     // The base validator has no rules, so Create never throws — not even on empty input.
     [Fact]
-    public void Create_BaseHasNoRules_DoesNotThrowOnEmpty()
+    public void Create_WithAnEmptyValue_DoesNotThrow()
         => Assert.Equal("", StringValueObject.Create("").Value);
 
     [Fact]
-    public void ImplicitOperator_ReturnsUnderlyingValue()
+    public void ImplicitOperator_WithAString_ReturnsTheUnderlyingValue()
     {
         string value = StringValueObject.Create("hi");
         Assert.Equal("hi", value);
     }
 
     [Fact]
-    public void Equality_SameTypeSameValue_AreEqual()
+    public void Equals_WithTheSameTypeAndValue_ReturnsTrue()
         => Assert.Equal(EmailValueObject.Create("a@b.com"), EmailValueObject.Create("a@b.com"));
 
     [Fact]
-    public void Equality_DifferentVoTypesSameValue_AreNotEqual()
+    public void Equals_WithDifferentTypesAndTheSameValue_ReturnsFalse()
         // Record equality includes the runtime type, so two different VO types with the same value differ.
         => Assert.NotEqual<StringValueObject>(EmailValueObject.From("abc"), OrderByValueObject.From("abc"));
 

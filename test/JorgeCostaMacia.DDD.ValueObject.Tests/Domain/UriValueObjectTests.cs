@@ -7,13 +7,13 @@ public sealed class UriValueObjectTests
     private static readonly Uri _uri = new Uri("https://example.com/api/v1?x=1");
 
     [Fact]
-    public void Ctor_HydratesRaw_WithoutValidating()
+    public void Ctor_WithARelativeUri_HydratesItAsGiven()
         => Assert.Equal(
             "relative/path",
             new UriValueObject(new Uri("relative/path", UriKind.Relative)).Value.OriginalString);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithAnAbsoluteUri_KeepsTheValue()
         => Assert.Equal(_uri, UriValueObject.From(_uri).Value);
 
     [Fact]
@@ -21,7 +21,7 @@ public sealed class UriValueObjectTests
         => Assert.Null(UriValueObject.From(null!).Value);
 
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithAnAbsoluteUri_KeepsTheValue()
         => Assert.Equal(_uri, UriValueObject.Create(_uri).Value);
 
     [Fact]
@@ -44,7 +44,7 @@ public sealed class UriValueObjectTests
         => Assert.Equal(value, UriValueObject.Create(new Uri(value)).Value.OriginalString);
 
     [Fact]
-    public void ImplicitOperator_ReturnsUnderlyingValue()
+    public void ImplicitOperator_WithAnAbsoluteUri_ReturnsTheUnderlyingValue()
     {
         Uri value = UriValueObject.Create(_uri);
         Assert.Equal(_uri, value);
@@ -52,13 +52,13 @@ public sealed class UriValueObjectTests
 
     // ToString reads back the text as it arrived, not Uri's normalized form (which would add a trailing slash here).
     [Fact]
-    public void ToString_ShowsTheOriginalText()
+    public void ToString_WithAnUnnormalizedUri_ShowsTheOriginalText()
         => Assert.Equal("https://EXAMPLE.com", UriValueObject.From(new Uri("https://EXAMPLE.com")).ToString());
 
     // The protected Convert family is the toolbox for derived VOs in consuming contexts —
     // exercised through a derived test type, like a real derived VO would.
     [Fact]
-    public void Convert_FromString_ParsesUri_TrimmingWhitespace()
+    public void Convert_FromAPaddedString_ParsesTheTrimmedUri()
         => Assert.Equal(_uri, TestUri.Convert("  https://example.com/api/v1?x=1  "));
 
     [Fact]

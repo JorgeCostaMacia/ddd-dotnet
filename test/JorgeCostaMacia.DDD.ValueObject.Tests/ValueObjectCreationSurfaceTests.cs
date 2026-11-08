@@ -17,7 +17,7 @@ public sealed class ValueObjectCreationSurfaceTests
         .ToArray();
 
     [Fact]
-    public void EveryValueObject_ExposesTheCreationSurface()
+    public void CreationSurface_OnEveryValueObjectInTheLibrary_IsExposed()
     {
         Assert.NotEmpty(_valueObjects);   // guard: the scan really found the value objects
 

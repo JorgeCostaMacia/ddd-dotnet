@@ -6,7 +6,7 @@ namespace JorgeCostaMacia.DDD.Exception.Tests.Domain;
 public sealed class ExceptionDefaultsTests
 {
     [Fact]
-    public void EveryExceptionType_HasADistinctAggregateCode()
+    public void AggregateCode_AcrossEveryDefaultsClass_IsDistinct()
     {
         Guid[] codes = new Guid[]
         {
@@ -21,7 +21,7 @@ public sealed class ExceptionDefaultsTests
     }
 
     [Fact]
-    public void HttpCodes_MatchTheDocumentedValues()
+    public void AggregateHttpCode_OnEveryDefaultsClass_MatchesTheDocumentedValue()
     {
         Assert.Equal(500, DomainExceptionDefaults.AGGREGATE_HTTP_CODE);
         Assert.Equal(400, ErrorExceptionDefaults.AGGREGATE_HTTP_CODE);
@@ -31,7 +31,7 @@ public sealed class ExceptionDefaultsTests
     }
 
     [Fact]
-    public void AggregateType_EqualsTheBaseTypeFullName()
+    public void AggregateType_OnEveryDefaultsClass_EqualsTheBaseTypeFullName()
     {
         Assert.Equal(typeof(DomainException).FullName, DomainExceptionDefaults.AGGREGATE_TYPE);
         Assert.Equal(typeof(ErrorException).FullName, ErrorExceptionDefaults.AGGREGATE_TYPE);

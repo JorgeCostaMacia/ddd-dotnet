@@ -7,12 +7,12 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class ValueObjectValidationExceptionHierarchyTests
 {
     [Fact]
-    public void DerivedException_IsAssignableToParent()
+    public void Ctor_OfTheGroupByException_IsAssignableToItsStringParent()
         => Assert.IsAssignableFrom<StringValueObjectValidationException>(
             new GroupByValueObjectValidationException(new List<ValidationFailure>()));
 
     [Fact]
-    public void DerivedException_CarriesItsOwnCode_NotParents()
+    public void AggregateCode_OfTheGroupByException_DiffersFromItsStringParent()
     {
         GroupByValueObjectValidationException group = new GroupByValueObjectValidationException(
             new List<ValidationFailure>());
@@ -23,12 +23,12 @@ public sealed class ValueObjectValidationExceptionHierarchyTests
     }
 
     [Fact]
-    public void DateTimeUtcException_IsAssignableToDateTimeException()
+    public void Ctor_OfTheDateTimeUtcException_IsAssignableToTheDateTimeException()
         => Assert.IsAssignableFrom<DateTimeValueObjectValidationException>(
             new DateTimeUtcValueObjectValidationException(new List<ValidationFailure>()));
 
     [Fact]
-    public void DateTimeUtcException_CarriesItsOwnCode_NotDateTimes()
+    public void AggregateCode_OfTheDateTimeUtcException_DiffersFromTheDateTimeOne()
     {
         DateTimeUtcValueObjectValidationException utc = new DateTimeUtcValueObjectValidationException(
             new List<ValidationFailure>());
@@ -76,7 +76,7 @@ public sealed class ValueObjectValidationExceptionHierarchyTests
     }
 
     [Fact]
-    public void DerivedException_PublicForwardingCtor_AppliesProvidedCode()
+    public void PublicForwardingCtor_OnADerivedExceptionWithACode_AppliesTheProvidedCode()
     {
         Guid code = new Guid("0195f3d2-2b5c-7d9f-a012-b3c4d5e6f708");
         GroupByValueObjectValidationException exception = new GroupByValueObjectValidationException(

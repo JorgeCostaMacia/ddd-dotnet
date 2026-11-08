@@ -18,7 +18,7 @@ public sealed class EmailValueObjectValidatorTests
     [InlineData("a@[1.2.3.4]")]            // IP literal
     [InlineData("\"a b\"@c.com")]          // quoted local part
     [InlineData("jose@españa.es")]         // non-ASCII domain
-    public void AnyEmail_Passes(string value)
+    public void Validate_WithAnyStandardAddress_Passes(string value)
         => Assert.True(_validator.Validate(EmailValueObject.From(value)).IsValid);
 
     [Theory]
@@ -35,12 +35,12 @@ public sealed class EmailValueObjectValidatorTests
     [InlineData(".a@b.com")]               // leading dot
     [InlineData("a@b..com")]               // empty domain label
     [InlineData("a@b c.com")]              // space in the domain
-    public void NotAnEmail_Fails(string value)
+    public void Validate_WithAMalformedAddress_Fails(string value)
         => Assert.False(_validator.Validate(EmailValueObject.From(value)).IsValid);
 
     // No cascade: an empty value reports both what it is (empty) and what it is not (an email).
     [Fact]
-    public void Empty_ReportsBothRules()
+    public void Validate_WithAnEmptyValue_ReportsBothRules()
     {
         ValidationResult result = _validator.Validate(EmailValueObject.From(""));
 
@@ -49,12 +49,12 @@ public sealed class EmailValueObjectValidatorTests
     }
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithAnAddressContainingASpace_ThrowsTheTypedException()
         => Assert.Throws<EmailValueObjectValidationException>(
             () => _validator.ValidateAndThrow(EmailValueObject.From("a b@c.com")));
 
     [Fact]
-    public void InjectableCtor_ComposesLikeCreate()
+    public void InjectableCtor_WithTheStringValidatorInjected_ComposesLikeCreate()
         => Assert.False(
             new EmailValueObjectValidator(new StringValueObjectValidator())
                 .Validate(EmailValueObject.From("notanemail"))
