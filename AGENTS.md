@@ -12,9 +12,9 @@ DDD building blocks for .NET — value objects with their FluentValidation valid
 
 - TFM: **`net10.0`**, single-target. net6/7/8/9 were dropped as they reached EOL — net9 in May 2026, net8 in November 2026 — and the last multi-targeting release is **6.0.6**, under the old `JorgeCostaMacia.<X>` ids, which stays on nuget.org for anyone pinned to a down-level runtime. Being single-target is what removes the per-TFM `#if NET9_0_OR_GREATER` branches: there is now **one** version of every package. **Do not reintroduce a per-TFM conditional** — if a dependency needs one, the answer is to move the whole repo, not to split it.
 - FluentValidation: the validators of `ValueObject` and the failure list `Exception`'s `ValidationException` carries. The only third-party dependency of the packages.
-- Tests: **xUnit v4 (the `xunit.v3` package, 4.x) on Microsoft.Testing.Platform v2 (MTP)** — test projects are `OutputType=Exe`, `dotnet test` runs MTP because the root **`global.json`** opts in, and `xunit.runner.visualstudio` is referenced for IDE discovery, as `testing-net` sets up. Running them needs the **.NET 10 SDK**.
+- Tests: **xUnit v4 (the `xunit.v3` package, 4.x) on Microsoft.Testing.Platform v2 (MTP)** — test projects are `OutputType=Exe`, `dotnet test` runs MTP because the root **`global.json`** opts in, and `xunit.runner.visualstudio` is referenced for IDE discovery, as `testing-dotnet` sets up. Running them needs the **.NET 10 SDK**.
 - Source is **UTF-8 without BOM** (`.editorconfig` `charset = utf-8`). camelCase locals, PascalCase types, I-prefixed interfaces. Copyright year stays **2023** (deliberate — don't bump).
-- **Explicit types everywhere — spell the type out.** Never `var`, never target-typed `new()`, never collection expressions `[]`: write `new Foo(...)`, `new byte[] { ... }`, `new List<T> { ... }`, `Array.Empty<T>()`. The `.editorconfig` sets all three to explicit, but only `var` is analyzer-enforced — the analyzer never reports the implicit forms. Develop (`dotnet-build-nuget` from github-workflows) guards target-typed `new(` and implicit `new[]` with a **grep step** that fails the build, and collection expressions `[…]` with a second one (`code-style-net`'s pattern: attributes, indexers, array types and list patterns never match it). Do not introduce any of them.
+- **Explicit types everywhere — spell the type out.** Never `var`, never target-typed `new()`, never collection expressions `[]`: write `new Foo(...)`, `new byte[] { ... }`, `new List<T> { ... }`, `Array.Empty<T>()`. The `.editorconfig` sets all three to explicit, but only `var` is analyzer-enforced — the analyzer never reports the implicit forms. Develop (`dotnet-build-nuget` from github-workflows) guards target-typed `new(` and implicit `new[]` with a **grep step** that fails the build, and collection expressions `[…]` with a second one (`code-style-dotnet`'s pattern: attributes, indexers, array types and list patterns never match it). Do not introduce any of them.
 
 ## The value-object factory surface
 
@@ -49,7 +49,7 @@ the build carries zero warnings.
 
 Packages reference each other via **`ProjectReference`** (ValueObject → Exception, Aggregate → DomainEvent). `dotnet pack` turns each `ProjectReference` into a NuGet `<dependency>` at the sibling's version, so the dependency graph still ships in the nuspec — but you build against local source and **release everything together** (no phased, tier-by-tier publishing). Don't reintroduce `PackageReference` between these packages.
 
-Nothing here depends on another `JorgeCostaMacia.*` repo. Other repos depend on this one, through the published packages: bus-dotnet's transports on `DDD.DomainEvent` (their `Event` implements `IDomainEvent`), http-net on `DDD.Exception` (it maps the hierarchy to ProblemDetails). A breaking change here is a major for them too.
+Nothing here depends on another `JorgeCostaMacia.*` repo. Other repos depend on this one, through the published packages: bus-dotnet's transports on `DDD.DomainEvent` (their `Event` implements `IDomainEvent`), http-dotnet on `DDD.Exception` (it maps the hierarchy to ProblemDetails). A breaking change here is a major for them too.
 
 ## Dependencies — Central Package Management
 
@@ -78,15 +78,15 @@ Use the **`gitflow` skill** for any branch/release work — never improvise.
 
 ## Relevant skills
 
-Skills that apply to this repo — let them trigger, or invoke explicitly. The first group is from `jorgecostamacia-agent-skills` (each `-net` skill brings the generic one it realizes); the rest from `dotnet-agent-skills` (the `dotnet/skills` marketplace).
+Skills that apply to this repo — let them trigger, or invoke explicitly. The first group is from `jorgecostamacia-agent-skills` (each `-dotnet` skill brings the generic one it realizes); the rest from `dotnet-agent-skills` (the `dotnet/skills` marketplace).
 
 A skill listed here but missing on this machine is one command away: `claude plugin marketplace add JorgeCostaMacia/skills` (or `dotnet/skills`) once, then `claude plugin install <skill>@<marketplace>`.
 
-- **`ddd-net`** (with **`ddd`**) — **the spec this library implements**: the base types, the four-factory surface (`From`, `FromOrNull`, `Create`, `CreateOrNull`) and why every one is declared, `Convert` as the one place a value is altered, no coercion and no defaults, the aggregate's `From`/`Create`, the exception family with its UUIDv7 codes, events on the root. A change here is a change in what that skill describes: keep the two in step.
-- **`validation-net`** — the validators: one per validated thing, per-call `Create()` chains with `Include`/`SetValidator`, no `Cascade`, `RaiseValidationException` raising the typed exception, and what each base validator checks — the list there must match this repo's validators.
-- **`testing-net`** (with **`testing`**) — xUnit v3 on Microsoft.Testing.Platform, the test project layout, convention tests over a kind of type (the factory surface, the distinct exception codes).
-- **`code-style-net`** — how the C# is written: explicit types, the 120-column width with declarations and constructions vertical, comments wrapped too, naming, the gates.
-- **`build-net`** — the three-tier `Directory.Build.props`, the single `VersionPrefix`, CPM, the three-day package age, the NuGet audit as a build gate, the library's packing metadata, and the `nuget.config` base.
+- **`ddd-dotnet`** (with **`ddd`**) — **the spec this library implements**: the base types, the four-factory surface (`From`, `FromOrNull`, `Create`, `CreateOrNull`) and why every one is declared, `Convert` as the one place a value is altered, no coercion and no defaults, the aggregate's `From`/`Create`, the exception family with its UUIDv7 codes, events on the root. A change here is a change in what that skill describes: keep the two in step.
+- **`validation-dotnet`** — the validators: one per validated thing, per-call `Create()` chains with `Include`/`SetValidator`, no `Cascade`, `RaiseValidationException` raising the typed exception, and what each base validator checks — the list there must match this repo's validators.
+- **`testing-dotnet`** (with **`testing`**) — xUnit v3 on Microsoft.Testing.Platform, the test project layout, convention tests over a kind of type (the factory surface, the distinct exception codes).
+- **`code-style-dotnet`** — how the C# is written: explicit types, the 120-column width with declarations and constructions vertical, comments wrapped too, naming, the gates.
+- **`build-dotnet`** — the three-tier `Directory.Build.props`, the single `VersionPrefix`, CPM, the three-day package age, the NuGet audit as a build gate, the library's packing metadata, and the `nuget.config` base.
 - **`clean-architecture`** / **`solid`** — the inward dependency rule behind the `Domain` namespaces, and design review of the public surface.
 - **`gitflow`** — all branch/release work.
 - **`dotnet`** — C# language server + general .NET development.
@@ -95,7 +95,7 @@ A skill listed here but missing on this machine is one command away: `claude plu
 - **`dotnet-test`** / **`dotnet-test-migration`** — tests; the xUnit v4 / MTP v2 setup.
 - **`dotnet-upgrade`** — target-framework migrations.
 
-Not relevant to this repo (skip): `efcore-net` / `efcore-postgres-net` (the mapping of these types is the consuming service's — value objects through `ComplexProperty` over `.Value`), `logging-net`, `messaging` / `bus-net` / `bus-kafka-net`, `clean-architecture-net` (no modules or composition contexts here), `github-actions` / `github-actions-net` (the company's CI; this repo's runs on github-workflows), `dotnet-aspnetcore` (that's http-net), `dotnet-data`, `dotnet-ai`, `dotnet-maui`, `dotnet-blazor`, `dotnet-template-engine`, `dotnet11`, `dotnet-diag`, `dotnet-advanced`.
+Not relevant to this repo (skip): `efcore-dotnet` / `efcore-postgres-dotnet` (the mapping of these types is the consuming service's — value objects through `ComplexProperty` over `.Value`), `logging-dotnet`, `messaging` / `bus-dotnet` / `bus-kafka-dotnet`, `clean-architecture-dotnet` (no modules or composition contexts here), `github-actions` / `github-actions-dotnet` (the company's CI; this repo's runs on github-workflows), `dotnet-aspnetcore` (that's http-dotnet), `dotnet-data`, `dotnet-ai`, `dotnet-maui`, `dotnet-blazor`, `dotnet-template-engine`, `dotnet11`, `dotnet-diag`, `dotnet-advanced`.
 
 ## Build & test
 
