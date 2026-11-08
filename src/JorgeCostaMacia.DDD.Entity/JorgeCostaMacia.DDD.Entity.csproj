@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<Description>Marker interface for identity-based domain entities</Description>
+		<PackageTags>ddd,entity,domain,marker</PackageTags>
+	</PropertyGroup>
+
+</Project>

@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\JorgeCostaMacia.DDD.Exception\JorgeCostaMacia.DDD.Exception.csproj" />
+	</ItemGroup>
+
+</Project>

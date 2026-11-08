@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+	<ItemGroup>
+		<ProjectReference Include="..\..\src\JorgeCostaMacia.DDD.Aggregate\JorgeCostaMacia.DDD.Aggregate.csproj" />
+	</ItemGroup>
+
+</Project>
