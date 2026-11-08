@@ -95,7 +95,7 @@ A skill listed here but missing on this machine is one command away: `claude plu
 - **`dotnet-test`** / **`dotnet-test-migration`** — tests; the xUnit v4 / MTP v2 setup.
 - **`dotnet-upgrade`** — target-framework migrations.
 
-Not relevant to this repo (skip): `efcore-dotnet` / `efcore-postgres-dotnet` (the mapping of these types is the consuming service's — value objects through `ComplexProperty` over `.Value`), `logging-dotnet`, `messaging` / `bus-dotnet` / `bus-kafka-dotnet`, `clean-architecture-dotnet` (no modules or composition contexts here), `github-actions` / `github-actions-dotnet` (the company's CI; this repo's runs on github-workflows), `dotnet-aspnetcore` (that's http-dotnet), `dotnet-data`, `dotnet-ai`, `dotnet-maui`, `dotnet-blazor`, `dotnet-template-engine`, `dotnet11`, `dotnet-diag`, `dotnet-advanced`.
+Not relevant to this repo (skip): `efcore-dotnet` / `efcore-postgres-dotnet` (the mapping of these types is the consuming service's — value objects through `ComplexProperty` over `.Value`), `logging-dotnet`, `messaging` / `bus-dotnet` / `bus-kafka-dotnet`, `clean-architecture-dotnet` (no modules or composition contexts here), `dotnet-aspnetcore` (that's http-dotnet), `dotnet-data`, `dotnet-ai`, `dotnet-maui`, `dotnet-blazor`, `dotnet-template-engine`, `dotnet11`, `dotnet-diag`, `dotnet-advanced`.
 
 ## Build & test
 
