@@ -26,9 +26,9 @@ The **.NET 10** SDK.
 | [JorgeCostaMacia.DDD.DomainEvent](https://www.nuget.org/packages/JorgeCostaMacia.DDD.DomainEvent/) | `IDomainEvent` marker — transport-agnostic domain events. |
 | [JorgeCostaMacia.DDD.Exception](https://www.nuget.org/packages/JorgeCostaMacia.DDD.Exception/) | The domain exception hierarchy (`Validation`, `NotFound`, `Exist`, `Error`) with traceable metadata. |
 
-## Upgrading from the `JorgeCostaMacia.<X>` ids
+## Upgrading
 
-Swap each `PackageReference` for its `JorgeCostaMacia.DDD.<X>` counterpart and rename the namespaces in your `using`s — `JorgeCostaMacia.ValueObject.Domain` becomes `JorgeCostaMacia.DDD.ValueObject.Domain`, and so on for the five packages. Nothing else changed: the types, their members and their behaviour are the ones of 10.1.5.
+What each version asks of you, when it asks anything, is in [CHANGELOG.md](CHANGELOG.md).
 
 ## Contact
 
