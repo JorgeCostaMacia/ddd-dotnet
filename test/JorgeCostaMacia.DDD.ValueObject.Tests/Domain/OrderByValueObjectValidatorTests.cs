@@ -10,15 +10,15 @@ public sealed class OrderByValueObjectValidatorTests
     [Theory]
     [InlineData("name")]
     [InlineData("created_at")]
-    public void NonEmpty_Passes(string value)
+    public void Validate_WithANonEmptyName_Passes(string value)
         => Assert.True(_validator.Validate(OrderByValueObject.From(value)).IsValid);
 
     [Fact]
-    public void Empty_Fails()
+    public void Validate_WithAnEmptyName_Fails()
         => Assert.False(_validator.Validate(OrderByValueObject.From("")).IsValid);
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithAnEmptyName_ThrowsTheTypedException()
         => Assert.Throws<OrderByValueObjectValidationException>(
             () => _validator.ValidateAndThrow(OrderByValueObject.From("")));
 }

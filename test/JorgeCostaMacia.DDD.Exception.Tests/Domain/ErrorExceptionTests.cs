@@ -55,18 +55,21 @@ file sealed class ErrorExceptionBuilder
     public ErrorExceptionBuilder WithId(Guid id)
     {
         _id = id;
+
         return this;
     }
 
     public ErrorExceptionBuilder WithErrors(ImmutableList<string> errors)
     {
         _errors = errors;
+
         return this;
     }
 
     public ErrorExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 
@@ -85,7 +88,7 @@ file sealed class ErrorExceptionBuilder
 public sealed class ErrorExceptionTests
 {
     [Fact]
-    public void Defaults_AreApplied_WhenMetadataOmitted()
+    public void Ctor_WithMetadataOmitted_AppliesTheDefaults()
     {
         TestErrorException exception = new TestErrorException(new string[] { "e" });
 
@@ -95,7 +98,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void Errors_AreStored_AndJoinedIntoMessage()
+    public void Ctor_WithTwoErrors_StoresThemAndJoinsThemIntoTheMessage()
     {
         TestErrorException exception = new TestErrorException(new string[] { "first", "second" });
 
@@ -104,7 +107,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void ExplicitMessage_OverridesJoinedErrors()
+    public void Message_WithAnExplicitMessage_OverridesTheJoinedErrors()
     {
         TestErrorException exception = new TestErrorException(
             new string[] { "a", "b" },
@@ -115,7 +118,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void Errors_AreIsolatedFromTheSourceSequence()
+    public void Errors_WhenTheSourceListGrowsAfterwards_AreIsolatedFromIt()
     {
         List<string> source = new List<string> { "a" };
         TestErrorException exception = new TestErrorException(source);
@@ -126,7 +129,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_StoresErrorsAndMetadata()
+    public void ExplicitCtor_WithAnIdAndErrors_StoresBoth()
     {
         Guid id = Guid.NewGuid();
         ImmutableList<string> errors = ImmutableList.Create("x", "y");
@@ -138,7 +141,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void InnerException_IsPropagated()
+    public void InnerException_WithAnInnerExceptionSupplied_IsPropagated()
     {
         InvalidOperationException inner = new InvalidOperationException("cause");
 
@@ -148,7 +151,7 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void EmptyErrors_ProduceNoArrow()
+    public void Message_WithNoErrors_OmitsTheArrow()
     {
         TestErrorException exception = new TestErrorException(Array.Empty<string>());
 
@@ -156,6 +159,6 @@ public sealed class ErrorExceptionTests
     }
 
     [Fact]
-    public void Instance_IsAssignableToDomainException()
+    public void Ctor_WithOneError_IsAssignableToDomainException()
         => Assert.IsAssignableFrom<DomainException>(new TestErrorException(new string[] { "e" }));
 }

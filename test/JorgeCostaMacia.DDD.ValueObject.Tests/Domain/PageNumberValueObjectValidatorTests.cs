@@ -11,18 +11,18 @@ public sealed class PageNumberValueObjectValidatorTests
     [InlineData(1)]
     [InlineData(5)]
     [InlineData(100)]
-    public void Positive_Passes(int value)
+    public void Validate_WithAPositiveNumber_Passes(int value)
         => Assert.True(_validator.Validate(PageNumberValueObject.From(value)).IsValid);
 
     [Theory]
     [InlineData(0)]
     [InlineData(-1)]
     [InlineData(-100)]
-    public void ZeroOrNegative_Fails(int value)
+    public void Validate_WithZeroOrANegativeNumber_Fails(int value)
         => Assert.False(_validator.Validate(PageNumberValueObject.From(value)).IsValid);
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithZero_ThrowsTheTypedException()
         => Assert.Throws<PageNumberValueObjectValidationException>(
             () => _validator.ValidateAndThrow(PageNumberValueObject.From(0)));
 }

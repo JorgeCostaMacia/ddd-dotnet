@@ -5,11 +5,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class Ipv4ValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutNormalizingOrValidating()
+    public void Ctor_WithAPaddedOutOfRangeAddress_HydratesItWithoutNormalizingOrValidating()
         => Assert.Equal("  999.999.999.999  ", new Ipv4ValueObject("  999.999.999.999  ").Value);
 
     [Fact]
-    public void From_Trims()
+    public void From_WithAPaddedAddress_TrimsIt()
         => Assert.Equal("192.168.1.1", Ipv4ValueObject.From("  192.168.1.1  ").Value);
 
     [Fact]
@@ -17,7 +17,7 @@ public sealed class Ipv4ValueObjectTests
         => Assert.Equal("999.999.999.999", Ipv4ValueObject.From("999.999.999.999").Value);
 
     [Fact]
-    public void Create_Trims()
+    public void Create_WithAPaddedAddress_TrimsIt()
         => Assert.Equal("192.168.1.1", Ipv4ValueObject.Create("  192.168.1.1  ").Value);
 
     [Fact]
@@ -48,6 +48,6 @@ public sealed class Ipv4ValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAnAddress_ShowsTheBareValue()
         => Assert.Equal("192.168.1.1", Ipv4ValueObject.From("192.168.1.1").ToString());
 }

@@ -51,12 +51,14 @@ file sealed class DomainExceptionBuilder
     public DomainExceptionBuilder WithMessage(string? message)
     {
         _message = message;
+
         return this;
     }
 
     public DomainExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 
@@ -74,7 +76,7 @@ file sealed class DomainExceptionBuilder
 public sealed class DomainExceptionTests
 {
     [Fact]
-    public void Defaults_AreApplied_WhenMetadataOmitted()
+    public void Ctor_WithMetadataOmitted_AppliesTheDefaults()
     {
         TestDomainException exception = new TestDomainException();
 
@@ -87,7 +89,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void Message_IncludesIdAndType_AndReusesTheSameId()
+    public void Message_WithASuppliedMessage_IncludesTheSameIdAndType()
     {
         TestDomainException exception = new TestDomainException("boom");
 
@@ -96,7 +98,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void Message_OmitsArrow_WhenNoMessage()
+    public void Message_WithNoMessage_OmitsTheArrow()
     {
         TestDomainException exception = new TestDomainException();
 
@@ -104,7 +106,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void Message_TrimsSuppliedMessage()
+    public void Message_WithAPaddedMessage_TrimsTheSuppliedMessage()
     {
         TestDomainException exception = new TestDomainException("   boom   ");
 
@@ -112,7 +114,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void ExplicitId_IsPreserved()
+    public void Ctor_WithASuppliedId_PreservesItInIdAndMessage()
     {
         Guid id = Guid.NewGuid();
 
@@ -125,7 +127,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_StoresAllMetadataVerbatim()
+    public void ExplicitCtor_WithAllMetadataSupplied_StoresItVerbatim()
     {
         Guid id = Guid.NewGuid();
         Guid code = Guid.NewGuid();
@@ -148,7 +150,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void InnerException_IsPropagated()
+    public void InnerException_WithAnInnerExceptionSupplied_IsPropagated()
     {
         InvalidOperationException inner = new InvalidOperationException("cause");
 
@@ -158,11 +160,11 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void Instance_IsAssignableToSystemException()
+    public void Ctor_WithNoArguments_IsAssignableToSystemException()
         => Assert.IsAssignableFrom<System.Exception>(new TestDomainException());
 
     [Fact]
-    public void Message_UsesLastSegmentOfDottedType()
+    public void Message_WithADottedType_UsesItsLastSegment()
     {
         TestDomainException exception = new TestDomainException(
             "boom",
@@ -181,7 +183,7 @@ public sealed class DomainExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_Message_IsRawAndUnprefixed()
+    public void Message_FromTheExplicitCtor_IsRawAndUnprefixed()
     {
         TestExplicitDomainException exception = new DomainExceptionBuilder().WithMessage("raw message").Build();
 

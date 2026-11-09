@@ -6,11 +6,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class OrderTypeValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutNormalizingOrValidating()
+    public void Ctor_WithAPaddedLowercaseDirection_HydratesItWithoutNormalizing()
         => Assert.Equal("  asc  ", new OrderTypeValueObject("  asc  ").Value);
 
     [Fact]
-    public void From_TrimsAndUppercases()
+    public void From_WithAPaddedLowercaseDirection_TrimsAndUppercases()
         => Assert.Equal("ASC", OrderTypeValueObject.From("  asc  ").Value);
 
     [Fact]
@@ -18,11 +18,11 @@ public sealed class OrderTypeValueObjectTests
         => Assert.Equal("UP", OrderTypeValueObject.From("up").Value);
 
     [Fact]
-    public void Create_TrimsAndUppercases()
+    public void Create_WithAPaddedLowercaseDirection_TrimsAndUppercases()
         => Assert.Equal("ASC", OrderTypeValueObject.Create("  asc  ").Value);
 
     [Fact]
-    public void Create_KeepsValidDirection()
+    public void Create_WithAValidUppercaseDirection_KeepsIt()
         => Assert.Equal("DESC", OrderTypeValueObject.Create("DESC").Value);
 
     [Fact]
@@ -30,7 +30,7 @@ public sealed class OrderTypeValueObjectTests
         => Assert.Throws<OrderTypeValueObjectValidationException>(() => OrderTypeValueObject.Create("UP"));
     // Upper-casing ignores the process culture: under tr-TR, ToUpper turns an "i" into a dotted "İ".
     [Fact]
-    public void From_UppercasesIndependentlyOfTheCulture()
+    public void From_UnderTheTurkishCulture_UppercasesInvariantly()
     {
         CultureInfo culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = new CultureInfo("tr-TR");
@@ -70,6 +70,6 @@ public sealed class OrderTypeValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithADirection_ShowsTheBareValue()
         => Assert.Equal("ASC", OrderTypeValueObject.From("ASC").ToString());
 }

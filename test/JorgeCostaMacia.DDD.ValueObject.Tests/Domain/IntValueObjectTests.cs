@@ -5,20 +5,20 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class IntValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw()
+    public void Ctor_WithAnInt_HydratesTheRawValue()
         => Assert.Equal(7, new IntValueObject(7).Value);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithAnInt_KeepsTheValue()
         => Assert.Equal(7, IntValueObject.From(7).Value);
 
     // The validator has no rules, so Create never throws.
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithAnInt_KeepsTheValue()
         => Assert.Equal(7, IntValueObject.Create(7).Value);
 
     [Fact]
-    public void ImplicitOperator_ReturnsUnderlyingValue()
+    public void ImplicitOperator_WithAnInt_ReturnsTheUnderlyingValue()
     {
         int value = IntValueObject.Create(7);
         Assert.Equal(7, value);
@@ -31,7 +31,7 @@ public sealed class IntValueObjectTests
         => Assert.Equal(42, TestInt.Convert("42"));
 
     [Fact]
-    public void Convert_FromString_LargeValues_KeepFullPrecision()
+    public void Convert_FromALargeIntegerString_KeepsFullPrecision()
     {
         // Regression: a float-based parse loses precision above 2^24 and overflows near int.MaxValue.
         Assert.Equal(int.MaxValue, TestInt.Convert("2147483647"));
@@ -43,7 +43,7 @@ public sealed class IntValueObjectTests
         => Assert.Equal(1000, TestInt.Convert("1E3"));
 
     [Fact]
-    public void Convert_FromString_OutOfRange_Throws()
+    public void Convert_FromAnOutOfRangeString_Throws()
         => Assert.Throws<OverflowException>(() => TestInt.Convert("2147483648"));
 
     // A fractional part is not dropped: truncating 5.9 to 5 would invent the value. A field that wants to
@@ -69,7 +69,7 @@ public sealed class IntValueObjectTests
     }
 
     [Fact]
-    public void Convert_FromFloatingPoint_OutOfRange_Throws()
+    public void Convert_FromAnOutOfRangeFloatingPoint_Throws()
     {
         Assert.Throws<OverflowException>(() => TestInt.Convert(3e10f));
         Assert.Throws<OverflowException>(() => TestInt.Convert(3e10));
@@ -87,7 +87,7 @@ public sealed class IntValueObjectTests
     }
 
     [Fact]
-    public void Convert_Conversions()
+    public void Convert_FromOtherNumericTypesAndBool_ReturnsTheEquivalentValue()
     {
         Assert.Equal(7, TestInt.Convert(7L));
         Assert.Equal(5, TestInt.Convert(5.0f));
@@ -131,6 +131,6 @@ public sealed class IntValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAnInt_ShowsTheBareValue()
         => Assert.Equal("42", IntValueObject.From(42).ToString());
 }

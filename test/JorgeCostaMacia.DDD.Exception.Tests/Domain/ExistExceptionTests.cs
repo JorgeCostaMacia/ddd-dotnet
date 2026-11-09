@@ -46,6 +46,7 @@ file sealed class ExistExceptionBuilder
     public ExistExceptionBuilder WithInnerException(System.Exception innerException)
     {
         _innerException = innerException;
+
         return this;
     }
 
@@ -63,7 +64,7 @@ file sealed class ExistExceptionBuilder
 public sealed class ExistExceptionTests
 {
     [Fact]
-    public void Defaults_AreApplied_WhenMetadataOmitted()
+    public void Ctor_WithMetadataOmitted_AppliesTheDefaults()
     {
         TestExistException exception = new TestExistException();
 
@@ -74,7 +75,7 @@ public sealed class ExistExceptionTests
     }
 
     [Fact]
-    public void Message_IncludesIdAndType()
+    public void Message_WithASuppliedMessage_IncludesIdAndType()
     {
         TestExistException exception = new TestExistException("duplicate");
 
@@ -82,7 +83,7 @@ public sealed class ExistExceptionTests
     }
 
     [Fact]
-    public void Message_OmitsArrow_WhenNoMessage()
+    public void Message_WithNoMessage_OmitsTheArrow()
     {
         TestExistException exception = new TestExistException();
 
@@ -90,7 +91,7 @@ public sealed class ExistExceptionTests
     }
 
     [Fact]
-    public void ExplicitCtor_StoresAllMetadataVerbatim()
+    public void ExplicitCtor_WithAllMetadataSupplied_StoresItVerbatim()
     {
         Guid id = Guid.NewGuid();
         Guid code = Guid.NewGuid();
@@ -113,7 +114,7 @@ public sealed class ExistExceptionTests
     }
 
     [Fact]
-    public void InnerException_IsPropagated()
+    public void InnerException_WithAnInnerExceptionSupplied_IsPropagated()
     {
         InvalidOperationException inner = new InvalidOperationException("cause");
 
@@ -123,6 +124,6 @@ public sealed class ExistExceptionTests
     }
 
     [Fact]
-    public void Instance_IsAssignableToDomainException()
+    public void Ctor_WithNoArguments_IsAssignableToDomainException()
         => Assert.IsAssignableFrom<DomainException>(new TestExistException());
 }

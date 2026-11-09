@@ -5,11 +5,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class PageSizeValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutValidating()
+    public void Ctor_WithZero_HydratesItWithoutValidating()
         => Assert.Equal(0, new PageSizeValueObject(0).Value);
 
     [Fact]
-    public void From_KeepsValue()
+    public void From_WithAPositiveSize_KeepsTheValue()
         => Assert.Equal(50, PageSizeValueObject.From(50).Value);
 
     [Fact]
@@ -17,7 +17,7 @@ public sealed class PageSizeValueObjectTests
         => Assert.Equal(0, PageSizeValueObject.From(0).Value);
 
     [Fact]
-    public void Create_KeepsValue()
+    public void Create_WithAPositiveSize_KeepsTheValue()
         => Assert.Equal(50, PageSizeValueObject.Create(50).Value);
 
     [Fact]
@@ -48,13 +48,13 @@ public sealed class PageSizeValueObjectTests
     // A record generates a ToString() that prints the type and its properties; the override replaces
     // it with the bare value, which is what a log line or an interpolated string should show.
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithAPageSize_ShowsTheBareValue()
         => Assert.Equal("50", PageSizeValueObject.From(50).ToString());
 
     // The ceiling division is the point: the last, partial page must survive. An integer division
     // written from memory (count / size) silently drops it.
     [Fact]
-    public void Pages_KeepsThePartialLastPage()
+    public void Pages_OnACountEndingInAPartialPage_KeepsThatPage()
         => Assert.Equal(3, PageSizeValueObject.From(10).Pages(21));
 
     [Fact]

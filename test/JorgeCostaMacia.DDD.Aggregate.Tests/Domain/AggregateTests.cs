@@ -11,7 +11,7 @@ file sealed class TestAggregate : Aggregate.Domain.Aggregate;
 public sealed class AggregateTests
 {
     [Fact]
-    public void NewAggregate_HasNoPendingEvents()
+    public void PullEvents_OnANewAggregate_ReturnsNoEvents()
     {
         TestAggregate aggregate = new TestAggregate();
 
@@ -19,7 +19,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void AddEvent_AccumulatesEvent()
+    public void AddEvent_OnAnEmptyAggregate_AccumulatesTheEvent()
     {
         TestAggregate aggregate = new TestAggregate();
         TestEvent raised = new TestEvent(1);
@@ -30,7 +30,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void AddEvents_AccumulatesAllInOrder()
+    public void AddEvents_OnAnEmptyAggregate_AccumulatesAllInOrder()
     {
         TestAggregate aggregate = new TestAggregate();
         TestEvent first = new TestEvent(1);
@@ -42,7 +42,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void PullEvents_ClearsTheListAfterPulling()
+    public void PullEvents_OnAnAggregateWithOneEvent_ClearsTheListAfterPulling()
     {
         TestAggregate aggregate = new TestAggregate();
         aggregate.AddEvent(new TestEvent(1));
@@ -81,7 +81,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void PullEvents_ReturnedSnapshot_IsUnaffectedBySubsequentAdd()
+    public void PullEvents_WithAnAddAfterwards_LeavesTheReturnedSnapshotUnaffected()
     {
         TestAggregate aggregate = new TestAggregate();
         aggregate.AddEvent(new TestEvent(1));
@@ -93,7 +93,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void AddThenPullThenAdd_AccumulatesFreshEventsOnly()
+    public void AddEvent_AfterAPull_AccumulatesFreshEventsOnly()
     {
         TestAggregate aggregate = new TestAggregate();
         aggregate.AddEvent(new TestEvent(1));
@@ -118,7 +118,7 @@ public sealed class AggregateTests
     }
 
     [Fact]
-    public void AddEventAndAddEvents_MixedSingleAndRange_PreservesOverallOrder()
+    public void AddEvents_BetweenSingleAddEvents_PreservesTheOverallOrder()
     {
         TestAggregate aggregate = new TestAggregate();
         TestEvent first = new TestEvent(1);

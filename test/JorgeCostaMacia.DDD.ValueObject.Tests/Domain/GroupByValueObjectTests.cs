@@ -6,11 +6,11 @@ namespace JorgeCostaMacia.DDD.ValueObject.Tests.Domain;
 public sealed class GroupByValueObjectTests
 {
     [Fact]
-    public void Ctor_HydratesRaw_WithoutNormalizingOrValidating()
+    public void Ctor_WithAPaddedLowercaseName_HydratesItWithoutNormalizing()
         => Assert.Equal("  category  ", new GroupByValueObject("  category  ").Value);
 
     [Fact]
-    public void From_TrimsAndUppercases()
+    public void From_WithAPaddedLowercaseName_TrimsAndUppercases()
         => Assert.Equal("CATEGORY", GroupByValueObject.From("  category  ").Value);
 
     [Fact]
@@ -18,7 +18,7 @@ public sealed class GroupByValueObjectTests
         => Assert.Equal("", GroupByValueObject.From("").Value);
 
     [Fact]
-    public void Create_TrimsAndUppercases()
+    public void Create_WithAPaddedLowercaseName_TrimsAndUppercases()
         => Assert.Equal("CATEGORY", GroupByValueObject.Create("  category  ").Value);
 
     [Fact]
@@ -26,7 +26,7 @@ public sealed class GroupByValueObjectTests
         => Assert.Throws<GroupByValueObjectValidationException>(() => GroupByValueObject.Create(""));
     // Upper-casing ignores the process culture: under tr-TR, ToUpper turns an "i" into a dotted "İ".
     [Fact]
-    public void From_UppercasesIndependentlyOfTheCulture()
+    public void From_UnderTheTurkishCulture_UppercasesInvariantly()
     {
         CultureInfo culture = CultureInfo.CurrentCulture;
         CultureInfo.CurrentCulture = new CultureInfo("tr-TR");
@@ -67,6 +67,6 @@ public sealed class GroupByValueObjectTests
     // it with the bare value, which is what a log line or an interpolated string should show.
     // Convert upper-cases: these are SQL fragments
     [Fact]
-    public void ToString_ShowsTheBareValue()
+    public void ToString_WithALowercaseName_ShowsTheBareUppercasedValue()
         => Assert.Equal("NAME", GroupByValueObject.From("name").ToString());
 }

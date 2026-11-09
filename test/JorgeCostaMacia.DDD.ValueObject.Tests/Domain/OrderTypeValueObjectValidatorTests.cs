@@ -12,18 +12,18 @@ public sealed class OrderTypeValueObjectValidatorTests
     [InlineData("DESC")]
     [InlineData("asc")]     // From upper-cases, so lowercase input is valid
     [InlineData("desc")]
-    public void ValidOrderType_Passes(string value)
+    public void Validate_WithAscOrDescInAnyCase_Passes(string value)
         => Assert.True(_validator.Validate(OrderTypeValueObject.From(value)).IsValid);
 
     [Theory]
     [InlineData("")]        // empty
     [InlineData("UP")]      // not a valid direction
     [InlineData("ASCENDING")]
-    public void InvalidOrderType_Fails(string value)
+    public void Validate_WithAnythingButAscOrDesc_Fails(string value)
         => Assert.False(_validator.Validate(OrderTypeValueObject.From(value)).IsValid);
 
     [Fact]
-    public void Invalid_ValidateAndThrow_ThrowsTypedException()
+    public void ValidateAndThrow_WithAnUnknownDirection_ThrowsTheTypedException()
         => Assert.Throws<OrderTypeValueObjectValidationException>(
             () => _validator.ValidateAndThrow(OrderTypeValueObject.From("UP")));
 }
