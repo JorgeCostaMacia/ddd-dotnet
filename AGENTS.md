@@ -1,6 +1,6 @@
 # ddd-dotnet — working in this repo
 
-DDD building blocks for .NET — value objects with their FluentValidation validators, aggregates, entities, domain events and the domain exception hierarchy — each scoped to a single concern and shipped independently on NuGet under `JorgeCostaMacia.DDD.*`. Moved out of **shared-net** in 11.0.0, which renamed the packages and their namespaces from `JorgeCostaMacia.<X>` to `JorgeCostaMacia.DDD.<X>`: the ids now match the namespaces, and the prefix names the repo, as `JorgeCostaMacia.Quartz.*` and `JorgeCostaMacia.Serilog` do. The old ids stay on nuget.org, deprecated in favour of these.
+DDD building blocks for .NET — value objects with their FluentValidation validators, aggregates, entities, domain events and the domain exception hierarchy — each scoped to a single concern and shipped independently on NuGet under `JorgeCostaMacia.DDD.*`. The old ids stay on nuget.org, deprecated in favour of these. The package ids match their namespaces (`JorgeCostaMacia.DDD.<X>`), and the prefix names the repo, as `JorgeCostaMacia.Quartz.*` and `JorgeCostaMacia.Serilog` do.
 
 ## Layout
 

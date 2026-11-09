@@ -10,7 +10,7 @@
 [![Main](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/main.yml/badge.svg?branch=main)](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/main.yml)
 [![Develop](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/develop.yml/badge.svg?branch=develop)](https://github.com/JorgeCostaMacia/ddd-dotnet/actions/workflows/develop.yml)
 
-Part of the `JorgeCostaMacia.*` family, alongside [quartz-dotnet](https://github.com/JorgeCostaMacia/quartz-dotnet) (Quartz.NET extensions), [serilog-dotnet](https://github.com/JorgeCostaMacia/serilog-dotnet) (the Serilog baseline), [bus-dotnet](https://github.com/JorgeCostaMacia/bus-dotnet) (messaging) and [http-dotnet](https://github.com/JorgeCostaMacia/http-dotnet) (ASP.NET Core). Moved out of [shared-net](https://github.com/JorgeCostaMacia/shared-net) in 11.0.0, which renamed the packages and their namespaces from `JorgeCostaMacia.<X>` to `JorgeCostaMacia.DDD.<X>`; the old ids stay on nuget.org, deprecated in favour of these.
+Part of the `JorgeCostaMacia.*` family, alongside [quartz-dotnet](https://github.com/JorgeCostaMacia/quartz-dotnet) (Quartz.NET extensions), [serilog-dotnet](https://github.com/JorgeCostaMacia/serilog-dotnet) (the Serilog baseline), [bus-dotnet](https://github.com/JorgeCostaMacia/bus-dotnet) (messaging) and [http-dotnet](https://github.com/JorgeCostaMacia/http-dotnet) (ASP.NET Core).
 
 ## Requirements
 
