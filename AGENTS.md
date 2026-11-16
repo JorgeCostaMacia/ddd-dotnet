@@ -18,8 +18,7 @@ DDD building blocks for .NET — value objects with their FluentValidation valid
 
 ## The value-object factory surface
 
-Every value object carries **four** public static factories, and a contract test
-(`ValueObjectCreationSurfaceTests`) scans the assembly by reflection and fails if one is missing:
+Every value object carries **four** public static factories, and a contract test (`ValueObjectCreationSurfaceTests`) scans the assembly by reflection and fails if one is missing:
 
 | verb | input | returns | semantics |
 |---|---|---|---|
@@ -30,20 +29,10 @@ Every value object carries **four** public static factories, and a contract test
 
 Two rules keep the pair honest:
 
-- **The `OrNull` pair is about absence, not failure.** It answers "the field did not come, what do I
-  build?" — never "this might be invalid, don't throw at me". That is why there is no `TryFrom`:
-  `From` only converts and cannot fail, so there is nothing to try. Nor a `FromOrDefault`: an
-  out-of-range value is a caller mistake, and coercing it would hide the mistake *and* give two
-  callers different behaviour for the same rule.
-- **`CreateOrNull` branches on what `FromOrNull` returned**, not on whether the input was null, and
-  validates with `vo?.Validate()`. Branching on the input would hard-code "non-null in, non-null
-  out" and would break the day a `From` maps a sentinel to absence.
+- **The `OrNull` pair is about absence, not failure.** It answers "the field did not come, what do I build?" — never "this might be invalid, don't throw at me". That is why there is no `TryFrom`: `From` only converts and cannot fail, so there is nothing to try. Nor a `FromOrDefault`: an out-of-range value is a caller mistake, and coercing it would hide the mistake *and* give two callers different behaviour for the same rule.
+- **`CreateOrNull` branches on what `FromOrNull` returned**, not on whether the input was null, and validates with `vo?.Validate()`. Branching on the input would hard-code "non-null in, non-null out" and would break the day a `From` maps a sentinel to absence.
 
-The nine bases that derive from another base (`EmailValueObject : StringValueObject`,
-`PageSizeValueObject : IntValueObject`, `DateTimeUtcValueObject : DateTimeValueObject`, …) declare all
-four with **`static new`**, because a static factory returning the derived type cannot be inherited.
-The compiler proves each one is needed: `CS0109` ("`new` not required") would appear otherwise, and
-the build carries zero warnings.
+The nine bases that derive from another base (`EmailValueObject : StringValueObject`, `PageSizeValueObject : IntValueObject`, `DateTimeUtcValueObject : DateTimeValueObject`, …) declare all four with **`static new`**, because a static factory returning the derived type cannot be inherited. The compiler proves each one is needed: `CS0109` ("`new` not required") would appear otherwise, and the build carries zero warnings.
 
 ## Inter-package dependencies
 
@@ -59,7 +48,7 @@ Third-party package versions are centralized in **`Directory.Packages.props`** (
 
 ## CI / publishing
 
-The three workflows call the reusable ones of [github-workflows](https://github.com/JorgeCostaMacia/github-workflows) (`@v1`): `develop.yml` runs `dotnet-build-nuget` on develop and PRs (the explicit-types and collection-expression greps, build, the `dotnet format` check, test, pack — no publish); `main.yml` runs the same build on a push to `main` and then pushes the `nuget` artifact to nuget.org with Trusted Publishing (`NuGet/login`, OIDC) — that job stays here because the nuget.org policy names this repo's `main.yml`; `release.yml` creates the GitHub Release of each `v*` tag. **The (central) `VersionPrefix` is the publish gate**: `--skip-duplicate` leaves an existing version alone, so only a release that moved it publishes.
+The three workflows call the reusable ones of [github-workflows](https://github.com/JorgeCostaMacia/github-workflows) (`@v1`): `develop.yml` runs `dotnet-build-nuget` on develop and PRs (the explicit-types and collection-expression greps, build, the `dotnet format` check, test, pack — no publish); `main.yml` runs the same build on a push to `main` and then pushes the `nuget` artifact to nuget.org with Trusted Publishing (`NuGet/login`, OIDC) — that job stays here because the nuget.org policy names this repo's `main.yml`; `release.yml` creates the GitHub Release of each `vX.Y.Z` tag, its notes the tag's `CHANGELOG.md` section. **The (central) `VersionPrefix` is the publish gate**: `--skip-duplicate` leaves an existing version alone, so only a release that moved it publishes.
 
 ## Branching & releases — GitFlow
 
@@ -89,7 +78,8 @@ A skill listed here but missing on this machine is one command away: `claude plu
 - **`build-dotnet`** — the three-tier `Directory.Build.props`, the single `VersionPrefix`, CPM, the three-day package age, the NuGet audit as a build gate, the library's packing metadata, and the `nuget.config` base.
 - **`clean-architecture`** / **`solid`** — the inward dependency rule behind the `Domain` namespaces, and design review of the public surface.
 - **`gitflow`** — all branch/release work.
-- **`changelog`** — the `CHANGELOG.md` entry a release adds when it asks something of the packages' consumers (a major, a new requirement, a changed default), written with the version bump.
+- **`changelog`** — the `CHANGELOG.md` entry a release adds when it asks something of the packages' consumers (a major, a new requirement, a changed default), written with the version bump, one paragraph per line: the Release takes that section as its notes.
+- **`code-style-md`** — how every `.md` here is written, the package READMEs included: one paragraph per line, never wrapped by hand.
 - **`dotnet`** — C# language server + general .NET development.
 - **`dotnet-msbuild`** — `Directory.Build.props`, project-file quality, CPM.
 - **`dotnet-nuget`** — dependency management.

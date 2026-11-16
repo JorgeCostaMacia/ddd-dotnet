@@ -47,9 +47,7 @@ EmailValueObjectValidator.Create().ValidateAndThrow(email);   // throws EmailVal
 
 ### Paging arithmetic
 
-`PageSizeValueObject` and `PageNumberValueObject` carry the two calculations every paged query
-rewrites by hand, and the two places that arithmetic goes wrong — the division that loses the last,
-partial page, and the offset that misses by one whole page:
+`PageSizeValueObject` and `PageNumberValueObject` carry the two calculations every paged query rewrites by hand, and the two places that arithmetic goes wrong — the division that loses the last, partial page, and the offset that misses by one whole page:
 
 ```csharp
 PageSizeValueObject size = PageSizeValueObject.Create(10);
@@ -62,8 +60,7 @@ int bound  = page.Within(pages);  // 3 — a page past the last resolves to the 
 query.Skip(size.Offset(bound)).Take(size.Value);
 ```
 
-They are total: every input gets an answer and none of them throws. Construction is where a value
-object decides what is valid — these compute on a value that already is.
+They are total: every input gets an answer and none of them throws. Construction is where a value object decides what is valid — these compute on a value that already is.
 
 ### Deriving your own value object
 
@@ -104,17 +101,13 @@ This surface is **required**, not optional: the ecosystem depends on it — the 
 
 ### No DI registration needed
 
-Each validator assembles itself through its static `Create()`, chaining the `Create()` of the validators
-it includes, so a value object's `Create()` reaches its rules with nothing registered anywhere:
+Each validator assembles itself through its static `Create()`, chaining the `Create()` of the validators it includes, so a value object's `Create()` reaches its rules with nothing registered anywhere:
 
 ```csharp
 EmailValueObject email = EmailValueObject.Create("user@host.com");   // its validator builds itself
 ```
 
-The constructors stay public, so a consumer that wants a validator from its own container can register
-one — `services.AddScoped<IValidator<EmailValueObject>, EmailValueObjectValidator>()` — and inject the
-`IValidator<StringValueObject>` it composes. This package registers nothing on your behalf, and takes
-no dependency on the DI abstractions.
+The constructors stay public, so a consumer that wants a validator from its own container can register one — `services.AddScoped<IValidator<EmailValueObject>, EmailValueObjectValidator>()` — and inject the `IValidator<StringValueObject>` it composes. This package registers nothing on your behalf, and takes no dependency on the DI abstractions.
 
 ## Requirements
 
